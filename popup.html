@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Canvas Submitted Work</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>Submitted Work</h1>
+    <span id="who" class="muted"></span>
+  </header>
+
+  <section class="controls">
+    <label>Student
+      <select id="student"></select>
+    </label>
+    <button id="load">Refresh</button>
+  </section>
+
+  <h2>Deadline watch</h2>
+  <section class="controls">
+    <label>Deadline (days)
+      <input type="number" id="limit" min="1" max="60">
+    </label>
+    <label>Warn when within
+      <input type="number" id="warn" min="0" max="30">
+    </label>
+    <label class="check">
+      <input type="checkbox" id="schoolDays"> School days only (Mon–Fri)
+    </label>
+  </section>
+  <div class="row">
+    <span id="deadlineSummary" class="muted"></span>
+    <button id="toggleHidden" class="link" hidden></button>
+  </div>
+  <table id="deadlines" hidden>
+    <thead>
+      <tr>
+        <th>Course</th>
+        <th>Last submission</th>
+        <th>Deadline</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Submitted assignments</h2>
+  <section class="controls">
+    <label>Due from
+      <input type="date" id="start">
+    </label>
+    <label>Due to
+      <input type="date" id="end">
+    </label>
+    <label>Course
+      <select id="course"><option value="">All courses</option></select>
+    </label>
+    <label class="grow">Search
+      <input type="search" id="search" placeholder="Assignment name…">
+    </label>
+    <button id="csv" disabled>Export CSV</button>
+  </section>
+
+  <div id="status" class="muted"></div>
+
+  <table id="results" hidden>
+    <thead>
+      <tr>
+        <th data-sort="course">Course</th>
+        <th data-sort="name">Assignment</th>
+        <th data-sort="dueAt">Due</th>
+        <th data-sort="submittedAt">Submitted</th>
+        <th data-sort="score">Score</th>
+        <th data-sort="status">Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="popup.js"></script>
+</body>
+</html>
