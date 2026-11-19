@@ -156,6 +156,47 @@ async function pageFetchSubmissions(vars) {
   return all;
 }
 
+// ---------- Update check ----------
+
+const REPO = "jorel13/canvas-submissions-extension";
+
+function isNewer(latest, current) {
+  const a = latest.split(".").map(Number);
+  const b = current.split(".").map(Number);
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    if ((a[i] || 0) !== (b[i] || 0)) return (a[i] || 0) > (b[i] || 0);
+  }
+  return false;
+}
+
+// Checks GitHub for a newer release at most once a day and shows a notice.
+async function checkForUpdate() {
+  let latest = store.get("latestRelease", null);
+  if (!latest || Date.now() - latest.checkedAt > DAY) {
+    latest = { tag: null, url: null, checkedAt: Date.now() };
+    try {
+      const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
+        headers: { accept: "application/vnd.github+json" },
+      });
+      if (r.ok) {
+        const j = await r.json();
+        latest = { tag: j.tag_name, url: j.html_url, checkedAt: Date.now() };
+      }
+    } catch (_) { /* offline or rate-limited; try again tomorrow */ }
+    store.set("latestRelease", latest);
+  }
+  const current = chrome.runtime.getManifest().version;
+  if (!latest.tag || !isNewer(latest.tag.replace(/^v/, ""), current)) return;
+
+  const banner = $("update");
+  const link = document.createElement("a");
+  link.href = `https://github.com/${REPO}/blob/main/INSTALL.md#updating`;
+  link.target = "_blank";
+  link.textContent = "How to update";
+  banner.replaceChildren(`Version ${latest.tag.replace(/^v/, "")} is available (you have ${current}). `, link);
+  banner.hidden = false;
+}
+
 // ---------- Popup helpers ----------
 
 async function runInPage(func, args = []) {
@@ -482,4 +523,5 @@ document.querySelectorAll("#results th[data-sort]").forEach((th) =>
   })
 );
 
+checkForUpdate();
 init();

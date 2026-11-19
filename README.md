@@ -2,11 +2,14 @@
 
 Shows the submitted assignments for the Canvas user you're logged in as. If you're an observer (parent), it shows them for the student you observe.
 
-## Install (unpacked)
-1. Open `edge://extensions`.
-2. Turn on **Developer mode** (bottom-left).
-3. Click **Load unpacked** and pick this folder.
-4. Pin the extension so it stays on the toolbar.
+## Install
+Quick install on Windows: open PowerShell and run
+
+```powershell
+irm https://raw.githubusercontent.com/jorel13/canvas-submissions-extension/main/install.ps1 | iex
+```
+
+then follow the steps it prints. For step-by-step instructions, manual install, updating and troubleshooting, see **[INSTALL.md](INSTALL.md)**.
 
 ## Use
 1. Log in to Canvas (e.g. `https://yourschool.instructure.com`) and keep a Canvas tab active.
@@ -31,3 +34,8 @@ This project is not affiliated with or endorsed by Instructure. Canvas is a trad
 
 ## License
 [MIT](LICENSE)
+
+## Publishing a release
+1. Raise `version` in `manifest.json` and commit.
+2. Tag and push: `git tag v1.2.3 && git push origin main v1.2.3` (the tag must match the manifest version).
+3. The **Release** GitHub Action builds `canvas-submitted-work.zip` and publishes the release. Installed copies show an update notice within a day.

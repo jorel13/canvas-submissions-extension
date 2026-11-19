@@ -40,6 +40,7 @@ h2 { font-size: 14px; margin: 14px 0 6px; padding-top: 10px; border-top: 1px sol
 .controls input[type="number"] { width: 70px; }
 .controls label.check { flex-direction: row; align-items: center; gap: 4px; font-size: 12px; padding-bottom: 5px; }
 #deadlines { margin-bottom: 4px; }
+.banner { margin-bottom: 8px; padding: 6px 8px; border: 1px solid var(--accent); border-radius: 4px; }
 tr.dim td { opacity: 0.5; }
 .muted { color: var(--muted); }
 
