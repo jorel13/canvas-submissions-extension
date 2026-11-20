@@ -1,10 +1,12 @@
 # Builds the extension ZIP and publishes a GitHub release when a version tag is pushed.
 # Usage: bump "version" in manifest.json, commit, then `git tag v1.2.3 && git push origin v1.2.3`.
+# It can also be run by hand from the Actions tab; it then releases the manifest version from main.
 name: Release
 
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,13 +17,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check tag matches manifest version
+      - name: Work out release tag
         run: |
-          version=$(jq -r .version manifest.json)
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "::error::Tag $GITHUB_REF_NAME does not match manifest.json version $version"
+          tag="v$(jq -r .version manifest.json)"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$tag" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match manifest.json version $tag"
             exit 1
           fi
+          echo "TAG=$tag" >> "$GITHUB_ENV"
 
       # The asset name stays the same every release so the
       # .../releases/latest/download/canvas-submitted-work.zip link always works.
@@ -34,5 +37,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/canvas-submitted-work.zip \
-            --title "$GITHUB_REF_NAME" --generate-notes
+          gh release create "$TAG" dist/canvas-submitted-work.zip \
+            --title "$TAG" --target "$GITHUB_SHA" --generate-notes
